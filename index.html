@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>METRO RUSH - Neon City Runner</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Main Game Container -->
+  <div id="game-container">
+    
+    <!-- Canvas Viewport -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- In-Game HUD -->
+    <div id="hud" class="hidden">
+      <div class="hud-top">
+        <div class="hud-card">
+          <span class="hud-label">SCORE</span>
+          <span id="score-val" class="hud-value neon-cyan">000000</span>
+        </div>
+        <div class="hud-card">
+          <span class="hud-label">COINS</span>
+          <span id="coins-val" class="hud-value neon-yellow">000</span>
+        </div>
+        <div class="hud-card">
+          <span class="hud-label">DISTANCE</span>
+          <span id="distance-val" class="hud-value neon-magenta">0m</span>
+        </div>
+        <div class="hud-card hide-mobile">
+          <span class="hud-label">SPEED</span>
+          <span id="speed-val" class="hud-value neon-blue">x1.0</span>
+        </div>
+      </div>
+
+      <div class="hud-bottom">
+        <div class="hud-lives">
+          <span id="lives-display">❤️❤️❤️</span>
+        </div>
+        <button id="pause-btn" class="icon-btn">⏸️</button>
+      </div>
+
+      <!-- Powerup Timer Indicators -->
+      <div id="powerup-bar"></div>
+    </div>
+
+    <!-- Mobile Touch Controls overlay -->
+    <div id="mobile-controls" class="hidden">
+      <div class="touch-row">
+        <button id="btn-left" class="touch-btn">◀ LEFT</button>
+        <button id="btn-jump" class="touch-btn action-btn">▲ JUMP</button>
+        <button id="btn-right" class="touch-btn">RIGHT ▶</button>
+      </div>
+      <div class="touch-row">
+        <button id="btn-slide" class="touch-btn action-btn full-width">▼ SLIDE</button>
+      </div>
+    </div>
+
+    <!-- START MENU SCREEN -->
+    <div id="start-screen" class="overlay-screen">
+      <div class="glass-card">
+        <h1 class="game-title">🚇 METRO RUSH</h1>
+        <p class="game-subtitle">NEON CITY RUN</p>
+
+        <div class="stats-preview">
+          <div>BEST SCORE: <span id="start-best-score" class="neon-cyan">0</span></div>
+        </div>
+
+        <div class="menu-actions">
+          <button id="start-btn" class="btn btn-primary">START RUN</button>
+          <button id="how-to-btn" class="btn btn-secondary">HOW TO PLAY</button>
+          <button id="settings-btn" class="btn btn-secondary">SETTINGS</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW TO PLAY MODAL -->
+    <div id="how-to-modal" class="overlay-screen hidden">
+      <div class="glass-card modal-card">
+        <h2>HOW TO PLAY</h2>
+        <div class="controls-guide">
+          <div class="guide-row"><span>← / A</span><span>Move Left</span></div>
+          <div class="guide-row"><span>→ / D</span><span>Move Right</span></div>
+          <div class="guide-row"><span>↑ / Space</span><span>Jump</span></div>
+          <div class="guide-row"><span>↓ / S</span><span>Slide</span></div>
+          <div class="guide-row"><span>P / Esc</span><span>Pause</span></div>
+          <div class="guide-row"><span>Mobile</span><span>Swipe gestures or On-screen buttons</span></div>
+        </div>
+        <p class="guide-desc">Collect coins and power-ups while dodging trains, high barriers, overhead obstacles, and low blocks!</p>
+        <button id="close-how-to" class="btn btn-secondary">CLOSE</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settings-modal" class="overlay-screen hidden">
+      <div class="glass-card modal-card">
+        <h2>SETTINGS</h2>
+        <div class="setting-item">
+          <label for="setting-sound">Sound Effects</label>
+          <input type="checkbox" id="setting-sound" checked>
+        </div>
+        <div class="setting-item">
+          <label for="setting-music">Music Synth</label>
+          <input type="checkbox" id="setting-music" checked>
+        </div>
+        <div class="setting-item">
+          <label for="setting-vibrate">Vibration</label>
+          <input type="checkbox" id="setting-vibrate" checked>
+        </div>
+        <div class="setting-item">
+          <label for="setting-reduced-fx">Reduced FX</label>
+          <input type="checkbox" id="setting-reduced-fx">
+        </div>
+        <button id="close-settings" class="btn btn-secondary">SAVE & CLOSE</button>
+      </div>
+    </div>
+
+    <!-- PAUSE MENU OVERLAY -->
+    <div id="pause-screen" class="overlay-screen hidden">
+      <div class="glass-card">
+        <h2>GAME PAUSED</h2>
+        <div class="menu-actions">
+          <button id="resume-btn" class="btn btn-primary">RESUME</button>
+          <button id="restart-btn" class="btn btn-secondary">RESTART</button>
+          <button id="main-menu-btn" class="btn btn-danger">MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME OVER SCREEN OVERLAY -->
+    <div id="game-over-screen" class="overlay-screen hidden">
+      <div class="glass-card">
+        <h2 class="neon-magenta-text">RUN ENDED</h2>
+        <h1 class="game-over-heading">GAME OVER</h1>
+
+        <div class="final-stats">
+          <div class="stat-box">
+            <span>FINAL SCORE</span>
+            <span id="final-score" class="neon-cyan">000000</span>
+          </div>
+          <div class="stat-box">
+            <span>COINS COLLECTED</span>
+            <span id="final-coins" class="neon-yellow">0</span>
+          </div>
+          <div class="stat-box">
+            <span>DISTANCE RUN</span>
+            <span id="final-distance" class="neon-magenta">0 m</span>
+          </div>
+          <div class="stat-box highlight">
+            <span>BEST SCORE</span>
+            <span id="final-best" class="neon-cyan">000000</span>
+          </div>
+        </div>
+
+        <div class="menu-actions">
+          <button id="retry-btn" class="btn btn-primary">RUN AGAIN</button>
+          <button id="over-main-menu-btn" class="btn btn-secondary">MAIN MENU</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
